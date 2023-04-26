@@ -1,21 +1,27 @@
-# Больше одного return, стоит переписать
-def validation_string(string_of_brackets):
-    elements = {'(': 0, '[': 0, '{': 0}
+def validation_string(string_of_brackets: str) -> bool:
+    if string_of_brackets == '':
+        # проверка на пустую строку
+        return False
+    answer = True
+    element_counter = {'(': 0, '[': 0, '{': 0}
     double = {')': '(', ']': '[', '}': '{'}
     for element in string_of_brackets:
-        if element in elements.keys():
-            elements[element] += 1
-        elif element in double.keys():
-            elements[double[element]] -= 1
-            if elements[double[element]] < 0:
-                return "нет"
+        if element in element_counter.keys():
+            element_counter[element] += 1
+        elif element in double.keys() and element_counter[double[element]] > 0:
+            # проверяем, что элемент это правая скобка и у него есть пара
+            element_counter[double[element]] -= 1
         else:
-            return "нет"
-    for number in elements.values():
+            # если есть что-то кроме скобок, выходим из цикла
+            element_counter['('] += 1
+            break
+    for number in element_counter.values():
+        # проверяем, что у нас не осталось скобки без пары
         if number != 0:
-            return "нет"
-    return "да"
+            answer = False
+            break
+    return answer
 
 
 if __name__ == "__main__":
-    print(validation_string(string_of_brackets="[]{}[[]]"))
+    print(validation_string(string_of_brackets=input("Введите строку из скобок.")))
